@@ -1,0 +1,33 @@
+ (defun replace-element (lst idx new-elem)
+  (if (null lst)
+      nil
+      (if (= idx 0)
+          (cons new-elem (rest lst))
+          (cons (first lst)(replace-element (rest lst) (- idx 1) new-elem)))))
+
+(defun shell-sort (lst n gap i)
+  (if (>= gap 1)
+      (if (< i n)
+          (let ((j i))
+            (if (and (>= j gap) (> (nth (- j gap) lst) (nth j lst)))
+                (shell-sort (replace-element (replace-element lst j (nth (- j gap) lst))
+                                             (- j gap) (nth j lst))
+                            n gap (- j gap))
+                (shell-sort lst n gap (+ i 1))))
+          (shell-sort lst n (floor (/ gap 2)) 0))
+      lst))
+
+(defun shell-sort-wrapper (lst)
+  (let ((n (length lst)))
+    (shell-sort lst n (floor (/ n 2)) 0)))
+
+(defun test-shell-sort ()
+  "Run a series of tests for shell-sort-wrapper."
+  (format t "Start testing shell-sort-wrapper function~%")
+  (check-shell-sort "Test 1" '(5 3 8 6 2 7 4 1) '(1 2 3 4 5 6 7 8))
+  (check-shell-sort "Test 2" '(10 9 8 7 6 5 4 3 2 1) '(1 2 3 4 5 6 7 8 9 10))
+  (check-shell-sort "Test 3" '(1 1 1 1 1) '(1 1 1 1 1))
+  (check-shell-sort "Test 4" '(100 -12 0 50 -35) '(-35 -12 0 50 100))
+  (check-shell-sort "Test 5" '(-1 -2 -3 -4 -5) '(-5 -4 -3 -2 -1))
+  (check-shell-sort "Test 6" '(2 2 2 2 1 1 1 1 3 3 3 3) '(1 1 1 1 2 2 2 2 3 3 3 3))
+  (format t "Testing completed~%"))
